@@ -8,7 +8,7 @@ import { body, validationResult } from 'express-validator';
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// Helper function to calculate working days
+// Helper function to calculate working days (including weekends)
 const calculateWorkingDays = (startDate: Date, endDate?: Date) => {
   const start = new Date(startDate);
   const end = endDate ? new Date(endDate) : new Date();
@@ -17,17 +17,15 @@ const calculateWorkingDays = (startDate: Date, endDate?: Date) => {
   const current = new Date(start);
   
   while (current <= end) {
-    // Skip weekends (Saturday = 6, Sunday = 0)
-    if (current.getDay() !== 0 && current.getDay() !== 6) {
-      workingDays++;
-    }
+    // Count all days including weekends
+    workingDays++;
     current.setDate(current.getDate() + 1);
   }
   
   return workingDays;
 };
 
-// Helper function to calculate leave days
+// Helper function to calculate leave days (including weekends)
 const calculateLeaveDays = async (driverId?: string, assistantId?: string) => {
   const leaveRecords = await prisma.leaveRecord.findMany({
     where: {
@@ -47,9 +45,8 @@ const calculateLeaveDays = async (driverId?: string, assistantId?: string) => {
     const current = new Date(start);
     
     while (current <= end) {
-      if (current.getDay() !== 0 && current.getDay() !== 6) {
-        days++;
-      }
+      // Count all leave days including weekends
+      days++;
       current.setDate(current.getDate() + 1);
     }
     totalLeaveDays += days;
