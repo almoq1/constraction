@@ -10,25 +10,145 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Multi-tenant SaaS Platform Models
+
+model Company {
+  id                String   @id @default(cuid())
+  name              String
+  slug              String   @unique // URL-friendly identifier
+  domain            String?  @unique // Custom domain
+  subdomain         String?  @unique // Subdomain
+  email             String   @unique
+  phone             String?
+  address           String?
+  logo              String?  // URL to logo image
+  favicon           String?  // URL to favicon
+  primaryColor      String   @default("#1976d2")
+  secondaryColor    String   @default("#dc004e")
+  accentColor       String   @default("#ff9800")
+  isActive          Boolean  @default(true)
+  isVerified        Boolean  @default(false)
+  subscriptionPlan  SubscriptionPlan @default(FREE)
+  subscriptionStart DateTime?
+  subscriptionEnd   DateTime?
+  maxUsers          Int      @default(5)
+  maxMachines       Int      @default(10)
+  maxDrivers        Int      @default(5)
+  maxContracts      Int      @default(10)
+  databaseUrl       String?  // Separate database URL for this company
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  users             User[]
+  landingPage       LandingPage?
+  settings          CompanySettings?
+  lands             Land[]
+  rooms             Room[]
+  machines          Machine[]
+  drivers           Driver[]
+  driverAssistants  DriverAssistant[]
+  contracts         Contract[]
+
+  @@map("companies")
+}
+
+model CompanySettings {
+  id                    String   @id @default(cuid())
+  companyId             String   @unique
+  timezone              String   @default("UTC")
+  currency              String   @default("USD")
+  dateFormat            String   @default("YYYY-MM-DD")
+  timeFormat            String   @default("24")
+  language              Language @default(ENGLISH)
+  enableNotifications   Boolean  @default(true)
+  enableEmailAlerts     Boolean  @default(true)
+  enableSMSAlerts       Boolean  @default(false)
+  autoBackup            Boolean  @default(true)
+  backupFrequency       String   @default("daily")
+  retentionDays         Int      @default(30)
+  customFields          Json?    // Custom fields for company-specific data
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  company               Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("company_settings")
+}
+
+model LandingPage {
+  id                    String   @id @default(cuid())
+  companyId             String   @unique
+  title                 String   @default("Welcome to Our Construction Services")
+  subtitle              String?  @default("Professional construction and equipment rental services")
+  heroImage             String?  // URL to hero image
+  heroVideo             String?  // URL to hero video
+  aboutTitle            String   @default("About Us")
+  aboutContent          String?  @default("We provide professional construction services with modern equipment and experienced staff.")
+  aboutImage            String?  // URL to about section image
+  services              Json?    // Array of services with title, description, icon
+  testimonials          Json?    // Array of testimonials
+  contactEmail          String?
+  contactPhone          String?
+  contactAddress        String?
+  socialLinks           Json?    // Social media links
+  footerText            String?  @default("© 2024 Construction Services. All rights reserved.")
+  customCSS             String?  // Custom CSS for styling
+  customJS              String?  // Custom JavaScript
+  isPublished           Boolean  @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  company               Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("landing_pages")
+}
+
+model SubscriptionPlan {
+  id                    String   @id @default(cuid())
+  name                  String   @unique
+  slug                  String   @unique
+  description           String?
+  price                 Float
+  billingCycle          BillingCycle @default(MONTHLY)
+  maxUsers              Int
+  maxMachines           Int
+  maxDrivers            Int
+  maxContracts          Int
+  features              Json     // Array of features
+  isActive              Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("subscription_plans")
+}
+
 model User {
   id        String   @id @default(cuid())
-  email     String   @unique
+  email     String
   password  String
   name      String
   role      UserRole @default(USER)
   language  Language @default(ENGLISH)
+  companyId String
+  isActive  Boolean  @default(true)
+  lastLogin DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
-  contracts    Contract[]
-  payments     Payment[]
+  company        Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contracts      Contract[]
+  payments       Payment[]
   salaryPayments SalaryPayment[]
-  driverAccount DriverAccount?
+  driverAccount  DriverAccount?
   assistantAccount AssistantAccount?
-  tenantAccount TenantAccount?
+  tenantAccount  TenantAccount?
   machineParkerAccount MachineParkerAccount?
 
+  @@unique([email, companyId])
   @@map("users")
 }
 
@@ -40,10 +160,12 @@ model Land {
   description String?
   isAvailable Boolean  @default(true)
   monthlyRent Float
+  companyId   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
+  company     Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
   landRentals LandRental[]
 
   @@map("lands")
@@ -59,10 +181,12 @@ model Room {
   description String?
   isAvailable Boolean  @default(true)
   monthlyRent Float
+  companyId   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
+  company     Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
   roomRentals RoomRental[]
 
   @@map("rooms")
@@ -79,10 +203,12 @@ model Machine {
   isAvailable Boolean  @default(true)
   dailyRate   Float
   hourlyRate  Float
+  companyId   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
+  company           Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
   machineAssignments MachineAssignment[]
   contractMachines   ContractMachine[]
   machineHours       MachineHour[]
@@ -101,10 +227,12 @@ model Driver {
   isOnVacation Boolean @default(false)
   vacationStartDate DateTime?
   vacationEndDate   DateTime?
+  companyId   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
+  company           Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
   driverAssignments DriverAssignment[]
   salaryPayments    SalaryPayment[]
   driverAccount     DriverAccount?
@@ -123,10 +251,12 @@ model DriverAssistant {
   isOnVacation Boolean @default(false)
   vacationStartDate DateTime?
   vacationEndDate   DateTime?
+  companyId   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
+  company              Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
   assistantAssignments AssistantAssignment[]
   salaryPayments       SalaryPayment[]
   assistantAccount     AssistantAccount?
@@ -145,13 +275,15 @@ model Contract {
   endDate     DateTime
   totalAmount Float
   status      ContractStatus @default(ACTIVE)
+  companyId   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
+  company         Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
   contractMachines ContractMachine[]
   payments         Payment[]
-  createdBy        User       @relation(fields: [createdById], references: [id])
+  createdBy        User           @relation(fields: [createdById], references: [id])
 
   createdById String
 
@@ -521,4 +653,17 @@ enum LeaveType {
   SICK
   PERSONAL
   OTHER
+}
+
+enum SubscriptionPlan {
+  FREE
+  BASIC
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+enum BillingCycle {
+  MONTHLY
+  QUARTERLY
+  YEARLY
 }

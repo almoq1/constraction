@@ -20,6 +20,11 @@ import Profile from './pages/Profile/Profile';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import SocketProvider from './components/Socket/SocketProvider';
 
+// SaaS Platform Components
+import SaasLanding from './pages/SaasLanding/SaasLanding';
+import CompanySelect from './pages/CompanySelect/CompanySelect';
+import CompanyLanding from './pages/CompanyLanding/CompanyLanding';
+
 // User Account Components
 import DriverLogin from './pages/DriverLogin/DriverLogin';
 import DriverDashboard from './pages/DriverDashboard/DriverDashboard';
@@ -57,23 +62,28 @@ function App() {
   return (
     <SocketProvider>
       <Routes>
-        {/* Public routes */}
+        {/* SaaS Platform Routes */}
+        <Route path="/" element={<SaasLanding />} />
+        <Route path="/company-select" element={<CompanySelect />} />
+        <Route path="/company-landing" element={<CompanyLanding />} />
+        
+        {/* Legacy App Routes */}
         <Route
-          path="/"
+          path="/app"
           element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <LandingPage />
+            isAuthenticated ? <Navigate to="/app/dashboard" replace /> : <Navigate to="/login" replace />
           }
         />
         <Route
           path="/login"
           element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
+            isAuthenticated ? <Navigate to="/app/dashboard" replace /> : <Login />
           }
         />
         <Route
           path="/register"
           element={
-            isAuthenticated ? <Navigate to="/register" replace /> : <Register />
+            isAuthenticated ? <Navigate to="/app/register" replace /> : <Register />
           }
         />
 
