@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: construction_db
+    environment:
+      POSTGRES_DB: construction_db
+      POSTGRES_USER: construction_user
+      POSTGRES_PASSWORD: construction_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./server/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - construction_network
+    restart: unless-stopped
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: construction_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - construction_network
+    restart: unless-stopped
+
+  # Backend API Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: construction_server
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://construction_user:construction_password@postgres:5432/construction_db
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
+      JWT_EXPIRES_IN: 7d
+      PORT: 5000
+      CLIENT_URL: http://localhost:3000
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server/uploads:/app/uploads
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - construction_network
+    restart: unless-stopped
+    command: >
+      sh -c "
+        npx prisma generate &&
+        npx prisma db push &&
+        npm run seed &&
+        npm start
+      "
+
+  # Frontend Client
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: construction_client
+    environment:
+      REACT_APP_API_URL: http://localhost:5000/api
+      REACT_APP_SOCKET_URL: http://localhost:5000
+      REACT_APP_NAME: "Construction SaaS Platform"
+      REACT_APP_VERSION: "1.0.0"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    networks:
+      - construction_network
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: construction_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - client
+      - server
+    networks:
+      - construction_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  construction_network:
+    driver: bridge

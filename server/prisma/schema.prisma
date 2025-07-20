@@ -1,0 +1,718 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Multi-tenant SaaS Platform Models
+
+model Company {
+  id                String   @id @default(cuid())
+  name              String
+  slug              String   @unique // URL-friendly identifier
+  domain            String?  @unique // Custom domain
+  subdomain         String?  @unique // Subdomain
+  email             String   @unique
+  phone             String?
+  address           String?
+  logo              String?  // URL to logo image
+  favicon           String?  // URL to favicon
+  primaryColor      String   @default("#1976d2")
+  secondaryColor    String   @default("#dc004e")
+  accentColor       String   @default("#ff9800")
+  isActive          Boolean  @default(true)
+  isVerified        Boolean  @default(false)
+  subscriptionPlan  SubscriptionPlan @default(FREE)
+  subscriptionStart DateTime?
+  subscriptionEnd   DateTime?
+  maxUsers          Int      @default(5)
+  maxMachines       Int      @default(10)
+  maxDrivers        Int      @default(5)
+  maxContracts      Int      @default(10)
+  databaseUrl       String?  // Separate database URL for this company
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  users             User[]
+  landingPage       LandingPage?
+  settings          CompanySettings?
+  lands             Land[]
+  rooms             Room[]
+  machines          Machine[]
+  drivers           Driver[]
+  driverAssistants  DriverAssistant[]
+  contracts         Contract[]
+  subscriptionPayments CompanySubscriptionPayment[]
+
+  @@map("companies")
+}
+
+model CompanySettings {
+  id                    String   @id @default(cuid())
+  companyId             String   @unique
+  timezone              String   @default("UTC")
+  currency              String   @default("USD")
+  dateFormat            String   @default("YYYY-MM-DD")
+  timeFormat            String   @default("24")
+  language              Language @default(ENGLISH)
+  enableNotifications   Boolean  @default(true)
+  enableEmailAlerts     Boolean  @default(true)
+  enableSMSAlerts       Boolean  @default(false)
+  autoBackup            Boolean  @default(true)
+  backupFrequency       String   @default("daily")
+  retentionDays         Int      @default(30)
+  customFields          Json?    // Custom fields for company-specific data
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  company               Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("company_settings")
+}
+
+model LandingPage {
+  id                    String   @id @default(cuid())
+  companyId             String   @unique
+  title                 String   @default("Welcome to Our Construction Services")
+  subtitle              String?  @default("Professional construction and equipment rental services")
+  heroImage             String?  // URL to hero image
+  heroVideo             String?  // URL to hero video
+  aboutTitle            String   @default("About Us")
+  aboutContent          String?  @default("We provide professional construction services with modern equipment and experienced staff.")
+  aboutImage            String?  // URL to about section image
+  services              Json?    // Array of services with title, description, icon
+  testimonials          Json?    // Array of testimonials
+  contactEmail          String?
+  contactPhone          String?
+  contactAddress        String?
+  socialLinks           Json?    // Social media links
+  footerText            String?  @default("© 2024 Construction Services. All rights reserved.")
+  customCSS             String?  // Custom CSS for styling
+  customJS              String?  // Custom JavaScript
+  isPublished           Boolean  @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  company               Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("landing_pages")
+}
+
+model SubscriptionPlan {
+  id                    String   @id @default(cuid())
+  name                  String   @unique
+  slug                  String   @unique
+  description           String?
+  price                 Float
+  billingCycle          BillingCycle @default(MONTHLY)
+  maxUsers              Int
+  maxMachines           Int
+  maxDrivers            Int
+  maxContracts          Int
+  features              Json     // Array of features
+  isActive              Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  subscriptionPayments CompanySubscriptionPayment[]
+
+  @@map("subscription_plans")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String
+  password  String
+  name      String
+  role      UserRole @default(USER)
+  language  Language @default(ENGLISH)
+  companyId String?
+  isActive  Boolean  @default(true)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  company        Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contracts      Contract[]
+  payments       Payment[]
+  salaryPayments SalaryPayment[]
+  subscriptionPayments CompanySubscriptionPayment[]
+  driverAccount  DriverAccount?
+  assistantAccount AssistantAccount?
+  tenantAccount  TenantAccount?
+  machineParkerAccount MachineParkerAccount?
+
+  @@unique([email, companyId])
+  @@map("users")
+}
+
+model Land {
+  id          String   @id @default(cuid())
+  name        String
+  location    String
+  size        Float    // in square meters
+  description String?
+  isAvailable Boolean  @default(true)
+  monthlyRent Float
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  company     Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  landRentals LandRental[]
+
+  @@map("lands")
+}
+
+model Room {
+  id          String   @id @default(cuid())
+  name        String
+  building    String
+  floor       Int
+  roomNumber  String
+  size        Float    // in square meters
+  description String?
+  isAvailable Boolean  @default(true)
+  monthlyRent Float
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  company     Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  roomRentals RoomRental[]
+
+  @@map("rooms")
+}
+
+model Machine {
+  id          String   @id @default(cuid())
+  name        String
+  type        MachineType
+  model       String
+  year        Int
+  capacity    String?
+  description String?
+  isAvailable Boolean  @default(true)
+  dailyRate   Float
+  hourlyRate  Float
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  company           Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  machineAssignments MachineAssignment[]
+  contractMachines   ContractMachine[]
+  machineHours       MachineHour[]
+
+  @@map("machines")
+}
+
+model Driver {
+  id          String   @id @default(cuid())
+  name        String
+  phone       String
+  licenseNumber String
+  experience  Int     // years of experience
+  salary      Float   // monthly salary
+  isActive    Boolean @default(true)
+  isOnVacation Boolean @default(false)
+  vacationStartDate DateTime?
+  vacationEndDate   DateTime?
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  company           Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  driverAssignments DriverAssignment[]
+  salaryPayments    SalaryPayment[]
+  driverAccount     DriverAccount?
+  leaveRecords      LeaveRecord[]
+
+  @@map("drivers")
+}
+
+model DriverAssistant {
+  id          String   @id @default(cuid())
+  name        String
+  phone       String
+  experience  Int     // years of experience
+  salary      Float   // monthly salary
+  isActive    Boolean @default(true)
+  isOnVacation Boolean @default(false)
+  vacationStartDate DateTime?
+  vacationEndDate   DateTime?
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  company              Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  assistantAssignments AssistantAssignment[]
+  salaryPayments       SalaryPayment[]
+  assistantAccount     AssistantAccount?
+  leaveRecords         LeaveRecord[]
+
+  @@map("driver_assistants")
+}
+
+model Contract {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  clientName  String
+  clientPhone String
+  startDate   DateTime
+  endDate     DateTime
+  totalAmount Float
+  status      ContractStatus @default(ACTIVE)
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  company         Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contractMachines ContractMachine[]
+  payments         Payment[]
+  createdBy        User           @relation(fields: [createdById], references: [id])
+
+  createdById String
+
+  @@map("contracts")
+}
+
+model ContractMachine {
+  id                String   @id @default(cuid())
+  contractId        String
+  machineId         String
+  requiredHoursPerDay Int
+  totalHoursPerMonth Int
+  dailyRate         Float
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  contract Contract @relation(fields: [contractId], references: [id])
+  machine  Machine  @relation(fields: [machineId], references: [id])
+
+  @@map("contract_machines")
+}
+
+model MachineAssignment {
+  id        String   @id @default(cuid())
+  machineId String
+  driverId  String?
+  assistantId String?
+  startDate DateTime
+  endDate   DateTime?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  machine   Machine         @relation(fields: [machineId], references: [id])
+  driver    Driver?         @relation(fields: [driverId], references: [id])
+  assistant DriverAssistant? @relation(fields: [assistantId], references: [id])
+
+  @@map("machine_assignments")
+}
+
+model DriverAssignment {
+  id        String   @id @default(cuid())
+  driverId  String
+  machineId String
+  startDate DateTime
+  endDate   DateTime?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  driver  Driver  @relation(fields: [driverId], references: [id])
+  machine Machine @relation(fields: [machineId], references: [id])
+
+  @@map("driver_assignments")
+}
+
+model AssistantAssignment {
+  id          String   @id @default(cuid())
+  assistantId String
+  machineId   String
+  startDate   DateTime
+  endDate     DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  assistant DriverAssistant @relation(fields: [assistantId], references: [id])
+  machine   Machine         @relation(fields: [machineId], references: [id])
+
+  @@map("assistant_assignments")
+}
+
+model MachineHour {
+  id        String   @id @default(cuid())
+  machineId String
+  date      DateTime
+  hoursWorked Float
+  requiredHours Float
+  extraHours Float
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  machine Machine @relation(fields: [machineId], references: [id])
+
+  @@map("machine_hours")
+}
+
+model LandRental {
+  id        String   @id @default(cuid())
+  landId    String
+  tenantName String
+  tenantPhone String
+  startDate DateTime
+  endDate   DateTime
+  monthlyRent Float
+  advancePayments Float @default(0)
+  status    RentalStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  land Land @relation(fields: [landId], references: [id])
+
+  @@map("land_rentals")
+}
+
+model RoomRental {
+  id        String   @id @default(cuid())
+  roomId    String
+  tenantName String
+  tenantPhone String
+  startDate DateTime
+  endDate   DateTime
+  monthlyRent Float
+  advancePayments Float @default(0)
+  status    RentalStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@map("room_rentals")
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  contractId String?
+  landRentalId String?
+  roomRentalId String?
+  amount    Float
+  type      PaymentType
+  date      DateTime
+  description String?
+  createdById String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  contract   Contract?   @relation(fields: [contractId], references: [id])
+  landRental LandRental? @relation(fields: [landRentalId], references: [id])
+  roomRental RoomRental? @relation(fields: [roomRentalId], references: [id])
+  createdBy  User        @relation(fields: [createdById], references: [id])
+
+  @@map("payments")
+}
+
+// Company Subscription Payment Model
+model CompanySubscriptionPayment {
+  id        String   @id @default(cuid())
+  companyId String
+  subscriptionPlanId String
+  amount    Float
+  paymentMethod PaymentMethod
+  paymentStatus PaymentStatus
+  billingCycle BillingCycle
+  billingPeriod String // e.g., "2024-01" for January 2024
+  dueDate   DateTime
+  paidDate  DateTime?
+  transactionId String? // For bank transfer or HesabPay
+  receiptNumber String? // For cash payments
+  notes     String?
+  createdById String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  subscriptionPlan SubscriptionPlan @relation(fields: [subscriptionPlanId], references: [id])
+  createdBy User @relation(fields: [createdById], references: [id])
+
+  @@map("company_subscription_payments")
+}
+
+model SalaryPayment {
+  id        String   @id @default(cuid())
+  driverId  String?
+  assistantId String?
+  amount    Float
+  type      PaymentType
+  date      DateTime
+  description String?
+  createdById String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  driver    Driver?         @relation(fields: [driverId], references: [id])
+  assistant DriverAssistant? @relation(fields: [assistantId], references: [id])
+  createdBy User            @relation(fields: [createdById], references: [id])
+
+  @@map("salary_payments")
+}
+
+model Alert {
+  id        String   @id @default(cuid())
+  type      AlertType
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  priority  AlertPriority @default(MEDIUM)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("alerts")
+}
+
+// Driver Account Model
+model DriverAccount {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  driverId  String   @unique
+  startDate DateTime
+  totalWorkingDays Int @default(0)
+  totalLeaveDays Int @default(0)
+  netWorkingDays Int @default(0)
+  totalSalaryEarned Float @default(0)
+  totalSalaryPaid Float @default(0)
+  remainingSalary Float @default(0)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  driver Driver @relation(fields: [driverId], references: [id], onDelete: Cascade)
+
+  @@map("driver_accounts")
+}
+
+// Assistant Account Model
+model AssistantAccount {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  assistantId String @unique
+  startDate DateTime
+  totalWorkingDays Int @default(0)
+  totalLeaveDays Int @default(0)
+  netWorkingDays Int @default(0)
+  totalSalaryEarned Float @default(0)
+  totalSalaryPaid Float @default(0)
+  remainingSalary Float @default(0)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assistant DriverAssistant @relation(fields: [assistantId], references: [id], onDelete: Cascade)
+
+  @@map("assistant_accounts")
+}
+
+// Tenant Account Model
+model TenantAccount {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  tenantName String
+  tenantPhone String
+  rentalType RentalType // LAND or ROOM
+  rentalId  String
+  startDate DateTime
+  monthlyRent Float
+  totalRentDue Float @default(0)
+  totalRentPaid Float @default(0)
+  remainingRent Float @default(0)
+  advancePayments Float @default(0)
+  lastPaymentDate DateTime?
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tenant_accounts")
+}
+
+// Machine Parker Account Model
+model MachineParkerAccount {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  parkerName String
+  parkerPhone String
+  landId    String
+  startDate DateTime
+  totalMachines Int @default(0)
+  farePerMachine Float
+  totalFareDue Float @default(0)
+  totalFarePaid Float @default(0)
+  remainingFare Float @default(0)
+  lastPaymentDate DateTime?
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("machine_parker_accounts")
+}
+
+// Leave Record Model
+model LeaveRecord {
+  id        String   @id @default(cuid())
+  driverId  String?
+  assistantId String?
+  startDate DateTime
+  endDate   DateTime
+  leaveType LeaveType
+  reason    String?
+  isApproved Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  driver    Driver?         @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  assistant DriverAssistant? @relation(fields: [assistantId], references: [id], onDelete: Cascade)
+
+  @@map("leave_records")
+}
+
+// Enums
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  MANAGER
+  USER
+}
+
+enum Language {
+  ENGLISH
+  DARI
+  PASHTO
+}
+
+enum MachineType {
+  EXCAVATOR
+  BULLDOZER
+  CRANE
+  TRUCK
+  LOADER
+  OTHER
+}
+
+enum ContractStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  SUSPENDED
+}
+
+enum RentalStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentType {
+  INCOME
+  EXPENSE
+  SALARY
+  RENT
+  CONTRACT
+}
+
+enum AlertType {
+  RENT_DUE
+  SALARY_DUE
+  CONTRACT_EXPIRY
+  MACHINE_MAINTENANCE
+  GENERAL
+}
+
+enum AlertPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum RentalType {
+  LAND
+  ROOM
+}
+
+enum LeaveType {
+  VACATION
+  SICK
+  PERSONAL
+  OTHER
+}
+
+enum SubscriptionPlan {
+  FREE
+  BASIC
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+enum BillingCycle {
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  HESABPAY
+  CREDIT_CARD
+  DEBIT_CARD
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+  FAILED
+}
