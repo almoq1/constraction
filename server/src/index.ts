@@ -19,6 +19,7 @@ import dashboardRoutes from './routes/dashboard';
 import accountRoutes from './routes/accounts';
 import companyRoutes from './routes/companies';
 import superAdminRoutes from './routes/superAdmin';
+import superAdminPaymentRoutes from './routes/superAdminPayments';
 
 // Import services
 import { setupCronJobs } from './services/cronJobs';
@@ -71,6 +72,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/super-admin', superAdminRoutes);
+app.use('/api/super-admin/payments', superAdminPaymentRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

@@ -52,7 +52,8 @@ import {
   TrendingUp,
   Warning,
   CheckCircle,
-  Cancel
+  Cancel,
+  Payment
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -283,6 +284,7 @@ const SuperAdminDashboard: React.FC = () => {
           <Tab label="Overview" icon={<Dashboard />} />
           <Tab label="Companies" icon={<Business />} />
           <Tab label="Users" icon={<People />} />
+          <Tab label="Payments" icon={<Payment />} />
           <Tab label="Settings" icon={<Settings />} />
         </Tabs>
       </Box>
@@ -532,8 +534,25 @@ const SuperAdminDashboard: React.FC = () => {
         </TableContainer>
       </TabPanel>
 
-      {/* Settings Tab */}
+      {/* Payments Tab */}
       <TabPanel value={tabValue} index={3}>
+        <Typography variant="h6" gutterBottom>
+          Payment Management
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          Manage company subscription payments, billing, and revenue tracking.
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<Payment />}
+          onClick={() => window.location.href = '/super-admin/payments'}
+        >
+          Go to Payment Management
+        </Button>
+      </TabPanel>
+
+      {/* Settings Tab */}
+      <TabPanel value={tabValue} index={4}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Card>

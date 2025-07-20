@@ -28,6 +28,7 @@ import CompanyLanding from './pages/CompanyLanding/CompanyLanding';
 // Super Admin Components
 import SuperAdminLogin from './pages/SuperAdmin/SuperAdminLogin';
 import SuperAdminDashboard from './pages/SuperAdmin/SuperAdminDashboard';
+import SuperAdminPayments from './pages/SuperAdmin/SuperAdminPayments';
 
 // User Account Components
 import DriverLogin from './pages/DriverLogin/DriverLogin';
@@ -74,6 +75,7 @@ function App() {
         {/* Super Admin Routes */}
         <Route path="/super-admin/login" element={<SuperAdminLogin />} />
         <Route path="/super-admin/dashboard" element={<SuperAdminDashboard />} />
+        <Route path="/super-admin/payments" element={<SuperAdminPayments />} />
         
         {/* Legacy App Routes */}
         <Route

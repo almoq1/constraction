@@ -49,6 +49,7 @@ model Company {
   drivers           Driver[]
   driverAssistants  DriverAssistant[]
   contracts         Contract[]
+  subscriptionPayments CompanySubscriptionPayment[]
 
   @@map("companies")
 }
@@ -122,6 +123,9 @@ model SubscriptionPlan {
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 
+  // Relations
+  subscriptionPayments CompanySubscriptionPayment[]
+
   @@map("subscription_plans")
 }
 
@@ -143,6 +147,7 @@ model User {
   contracts      Contract[]
   payments       Payment[]
   salaryPayments SalaryPayment[]
+  subscriptionPayments CompanySubscriptionPayment[]
   driverAccount  DriverAccount?
   assistantAccount AssistantAccount?
   tenantAccount  TenantAccount?
@@ -437,6 +442,33 @@ model Payment {
   @@map("payments")
 }
 
+// Company Subscription Payment Model
+model CompanySubscriptionPayment {
+  id        String   @id @default(cuid())
+  companyId String
+  subscriptionPlanId String
+  amount    Float
+  paymentMethod PaymentMethod
+  paymentStatus PaymentStatus
+  billingCycle BillingCycle
+  billingPeriod String // e.g., "2024-01" for January 2024
+  dueDate   DateTime
+  paidDate  DateTime?
+  transactionId String? // For bank transfer or HesabPay
+  receiptNumber String? // For cash payments
+  notes     String?
+  createdById String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  subscriptionPlan SubscriptionPlan @relation(fields: [subscriptionPlanId], references: [id])
+  createdBy User @relation(fields: [createdById], references: [id])
+
+  @@map("company_subscription_payments")
+}
+
 model SalaryPayment {
   id        String   @id @default(cuid())
   driverId  String?
@@ -667,4 +699,20 @@ enum BillingCycle {
   MONTHLY
   QUARTERLY
   YEARLY
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  HESABPAY
+  CREDIT_CARD
+  DEBIT_CARD
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+  FAILED
 }
