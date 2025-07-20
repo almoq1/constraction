@@ -132,14 +132,14 @@ model User {
   name      String
   role      UserRole @default(USER)
   language  Language @default(ENGLISH)
-  companyId String
+  companyId String?
   isActive  Boolean  @default(true)
   lastLogin DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
-  company        Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company        Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
   contracts      Contract[]
   payments       Payment[]
   salaryPayments SalaryPayment[]
@@ -587,6 +587,7 @@ model LeaveRecord {
 
 // Enums
 enum UserRole {
+  SUPER_ADMIN
   ADMIN
   MANAGER
   USER
