@@ -1,0 +1,389 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(USER)
+  language  Language @default(ENGLISH)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  contracts    Contract[]
+  payments     Payment[]
+  salaryPayments SalaryPayment[]
+
+  @@map("users")
+}
+
+model Land {
+  id          String   @id @default(cuid())
+  name        String
+  location    String
+  size        Float    // in square meters
+  description String?
+  isAvailable Boolean  @default(true)
+  monthlyRent Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  landRentals LandRental[]
+
+  @@map("lands")
+}
+
+model Room {
+  id          String   @id @default(cuid())
+  name        String
+  building    String
+  floor       Int
+  roomNumber  String
+  size        Float    // in square meters
+  description String?
+  isAvailable Boolean  @default(true)
+  monthlyRent Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  roomRentals RoomRental[]
+
+  @@map("rooms")
+}
+
+model Machine {
+  id          String   @id @default(cuid())
+  name        String
+  type        MachineType
+  model       String
+  year        Int
+  capacity    String?
+  description String?
+  isAvailable Boolean  @default(true)
+  dailyRate   Float
+  hourlyRate  Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  machineAssignments MachineAssignment[]
+  contractMachines   ContractMachine[]
+  machineHours       MachineHour[]
+
+  @@map("machines")
+}
+
+model Driver {
+  id          String   @id @default(cuid())
+  name        String
+  phone       String
+  licenseNumber String
+  experience  Int     // years of experience
+  salary      Float   // monthly salary
+  isActive    Boolean @default(true)
+  isOnVacation Boolean @default(false)
+  vacationStartDate DateTime?
+  vacationEndDate   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  driverAssignments DriverAssignment[]
+  salaryPayments    SalaryPayment[]
+
+  @@map("drivers")
+}
+
+model DriverAssistant {
+  id          String   @id @default(cuid())
+  name        String
+  phone       String
+  experience  Int     // years of experience
+  salary      Float   // monthly salary
+  isActive    Boolean @default(true)
+  isOnVacation Boolean @default(false)
+  vacationStartDate DateTime?
+  vacationEndDate   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  assistantAssignments AssistantAssignment[]
+  salaryPayments       SalaryPayment[]
+
+  @@map("driver_assistants")
+}
+
+model Contract {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  clientName  String
+  clientPhone String
+  startDate   DateTime
+  endDate     DateTime
+  totalAmount Float
+  status      ContractStatus @default(ACTIVE)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  contractMachines ContractMachine[]
+  payments         Payment[]
+  createdBy        User       @relation(fields: [createdById], references: [id])
+
+  createdById String
+
+  @@map("contracts")
+}
+
+model ContractMachine {
+  id                String   @id @default(cuid())
+  contractId        String
+  machineId         String
+  requiredHoursPerDay Int
+  totalHoursPerMonth Int
+  dailyRate         Float
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  contract Contract @relation(fields: [contractId], references: [id])
+  machine  Machine  @relation(fields: [machineId], references: [id])
+
+  @@map("contract_machines")
+}
+
+model MachineAssignment {
+  id        String   @id @default(cuid())
+  machineId String
+  driverId  String?
+  assistantId String?
+  startDate DateTime
+  endDate   DateTime?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  machine   Machine         @relation(fields: [machineId], references: [id])
+  driver    Driver?         @relation(fields: [driverId], references: [id])
+  assistant DriverAssistant? @relation(fields: [assistantId], references: [id])
+
+  @@map("machine_assignments")
+}
+
+model DriverAssignment {
+  id        String   @id @default(cuid())
+  driverId  String
+  machineId String
+  startDate DateTime
+  endDate   DateTime?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  driver  Driver  @relation(fields: [driverId], references: [id])
+  machine Machine @relation(fields: [machineId], references: [id])
+
+  @@map("driver_assignments")
+}
+
+model AssistantAssignment {
+  id          String   @id @default(cuid())
+  assistantId String
+  machineId   String
+  startDate   DateTime
+  endDate     DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  assistant DriverAssistant @relation(fields: [assistantId], references: [id])
+  machine   Machine         @relation(fields: [machineId], references: [id])
+
+  @@map("assistant_assignments")
+}
+
+model MachineHour {
+  id        String   @id @default(cuid())
+  machineId String
+  date      DateTime
+  hoursWorked Float
+  requiredHours Float
+  extraHours Float
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  machine Machine @relation(fields: [machineId], references: [id])
+
+  @@map("machine_hours")
+}
+
+model LandRental {
+  id        String   @id @default(cuid())
+  landId    String
+  tenantName String
+  tenantPhone String
+  startDate DateTime
+  endDate   DateTime
+  monthlyRent Float
+  advancePayments Float @default(0)
+  status    RentalStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  land Land @relation(fields: [landId], references: [id])
+
+  @@map("land_rentals")
+}
+
+model RoomRental {
+  id        String   @id @default(cuid())
+  roomId    String
+  tenantName String
+  tenantPhone String
+  startDate DateTime
+  endDate   DateTime
+  monthlyRent Float
+  advancePayments Float @default(0)
+  status    RentalStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@map("room_rentals")
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  contractId String?
+  landRentalId String?
+  roomRentalId String?
+  amount    Float
+  type      PaymentType
+  date      DateTime
+  description String?
+  createdById String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  contract   Contract?   @relation(fields: [contractId], references: [id])
+  landRental LandRental? @relation(fields: [landRentalId], references: [id])
+  roomRental RoomRental? @relation(fields: [roomRentalId], references: [id])
+  createdBy  User        @relation(fields: [createdById], references: [id])
+
+  @@map("payments")
+}
+
+model SalaryPayment {
+  id        String   @id @default(cuid())
+  driverId  String?
+  assistantId String?
+  amount    Float
+  type      PaymentType
+  date      DateTime
+  description String?
+  createdById String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  driver    Driver?         @relation(fields: [driverId], references: [id])
+  assistant DriverAssistant? @relation(fields: [assistantId], references: [id])
+  createdBy User            @relation(fields: [createdById], references: [id])
+
+  @@map("salary_payments")
+}
+
+model Alert {
+  id        String   @id @default(cuid())
+  type      AlertType
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  priority  AlertPriority @default(MEDIUM)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("alerts")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  MANAGER
+  USER
+}
+
+enum Language {
+  ENGLISH
+  DARI
+  PASHTO
+}
+
+enum MachineType {
+  EXCAVATOR
+  BULLDOZER
+  CRANE
+  TRUCK
+  LOADER
+  OTHER
+}
+
+enum ContractStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  SUSPENDED
+}
+
+enum RentalStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentType {
+  INCOME
+  EXPENSE
+  SALARY
+  RENT
+  CONTRACT
+}
+
+enum AlertType {
+  RENT_DUE
+  SALARY_DUE
+  CONTRACT_EXPIRY
+  MACHINE_MAINTENANCE
+  GENERAL
+}
+
+enum AlertPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
