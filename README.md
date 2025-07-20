@@ -1,461 +1,384 @@
-# Construction SaaS Platform
+# 🏗️ Construction SaaS Platform
 
-A comprehensive construction management platform built with Node.js, Express, React, and TypeScript. This platform provides complete management solutions for construction companies, including machine management, personnel management, contract tracking, rental management, payment processing, and automated alerts.
+A comprehensive SaaS platform for construction companies to manage machines, drivers, contracts, rentals, payments, and alerts with real-time updates and multi-language support.
 
-## 🚀 Features
+## ✨ Features
 
-### Core Management Modules
+### 🚀 Core Management Modules
+- **Machine Management** - Complete CRUD with status tracking and hour monitoring
+- **Driver Management** - Personnel management with salary tracking and assistant assignments
+- **Contract Management** - Project tracking with progress monitoring and machine assignments
+- **Rental Management** - Land and room rentals with tenant management
+- **Payment Management** - Comprehensive financial tracking and reporting
+- **Alerts Management** - Automated notification system for various events
+- **Profile Management** - User preferences and security settings
 
-#### 1. **Machine Management**
-- Complete CRUD operations for construction machines
-- Machine status tracking (active, inactive, maintenance, rented)
-- Working hours tracking and assignment management
-- Maintenance scheduling and history
-- Machine utilization analytics
-- Real-time status updates
+### 🎯 Business Logic Features
+- **30-day Month Calculation** for consistent billing
+- **Salary Management** with partial payments and deductions
+- **Rent Payment Tracking** with advance payments and alerts
+- **Machine Hour Tracking** with automated calculations
+- **Financial Reporting** with comprehensive summaries
+- **Automated Alerts** for rent due, maintenance, contracts
+- **Working Hours vs Required Hours** tracking
 
-#### 2. **Driver Management**
-- Comprehensive driver profiles with contact information
-- License and experience tracking
-- Salary management and payment tracking
-- Assistant management for each driver
-- Vacation and sick leave tracking
-- Working hours calculation
-- Driver-machine assignments
-
-#### 3. **Contract Management**
-- Contract creation and management
-- Client information tracking
-- Machine assignments to contracts
-- Progress tracking and milestone management
-- Payment tracking (advance, progress, final)
-- Contract status management (pending, active, completed, cancelled)
-- Working hours vs required hours tracking
-
-#### 4. **Rental Management**
-- Land and room rental management
-- Tenant assignment and information tracking
-- Payment tracking and overdue management
-- Rental status management (available, rented, maintenance, reserved)
-- Size and location tracking
-- Monthly rent calculations
-
-#### 5. **Payment Management**
-- Comprehensive payment tracking for all types
-- Income and expense categorization
-- Multiple payment methods (cash, bank transfer, check, credit card)
-- Payment status tracking (paid, pending, overdue, cancelled)
-- Due date management
-- Financial reporting and analytics
-
-#### 6. **Alerts Management**
-- Automated alert system for various events
-- Alert types: rent due, maintenance, contract deadlines, payment overdue
-- Priority levels (low, medium, high, critical)
-- Alert status management (active, acknowledged, resolved, dismissed)
-- Email and SMS notification settings
-- Action buttons for quick responses
-
-#### 7. **Dashboard & Analytics**
-- Real-time overview of all operations
-- Key performance indicators
-- Machine utilization metrics
-- Contract performance tracking
-- Recent payments and alerts
-- Quick action buttons
-- Responsive design with charts and graphs
-
-#### 8. **User Profile & Settings**
-- Comprehensive user profile management
-- Multi-language support (English, Dari, Pashto)
-- Theme customization (light, dark, auto)
-- Notification preferences
-- Security settings and password management
-- Timezone and date format preferences
-- Currency settings
-
-### Technical Features
-
-#### **Frontend (React + TypeScript)**
-- Modern React with TypeScript for type safety
-- Material-UI for consistent and beautiful UI components
-- Redux Toolkit for state management
-- React Router v6 for navigation
-- i18next for internationalization
-- Responsive design for all devices
-- Real-time updates with Socket.io
-- Form validation and error handling
-
-#### **Backend (Node.js + Express)**
-- RESTful API with comprehensive endpoints
-- JWT-based authentication and authorization
-- Role-based access control (admin, manager, operator)
-- Prisma ORM for database management
-- PostgreSQL database
-- Real-time communication with Socket.io
-- Automated cron jobs for alerts and maintenance
-- File upload and management
-- Comprehensive error handling and logging
-
-#### **Database (PostgreSQL)**
-- Well-designed schema with relationships
-- Data integrity and constraints
-- Efficient indexing for performance
-- Audit trails and history tracking
-- Backup and recovery procedures
+### 🔧 Technical Features
+- **Real-time Updates** with Socket.io
+- **Multi-language Support** (English, Dari, Pashto)
+- **Responsive Design** for all devices
+- **Role-based Access Control** (Admin, Manager, Operator)
+- **JWT Authentication** with secure token management
+- **Form Validation** and comprehensive error handling
+- **File Upload** capabilities for avatars and documents
+- **Professional UI/UX** with Material-UI components
 
 ## 🛠️ Technology Stack
 
 ### Frontend
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **Material-UI (MUI)** - UI components
-- **Redux Toolkit** - State management
-- **React Router v6** - Routing
-- **i18next** - Internationalization
-- **Socket.io Client** - Real-time communication
-- **Axios** - HTTP client
+- **React 18** with TypeScript
+- **Material-UI (MUI)** for UI components
+- **React Router** for navigation
+- **React Hook Form** for form management
+- **Socket.io Client** for real-time updates
+- **Axios** for API communication
+- **i18next** for internationalization
+- **Recharts** for data visualization
 
 ### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **TypeScript** - Type safety
-- **Prisma** - Database ORM
-- **PostgreSQL** - Database
-- **JWT** - Authentication
-- **Socket.io** - Real-time communication
-- **node-cron** - Scheduled tasks
-- **bcryptjs** - Password hashing
-- **multer** - File uploads
+- **Node.js** with TypeScript
+- **Express.js** framework
+- **Prisma ORM** with PostgreSQL
+- **Socket.io** for real-time communication
+- **JWT** for authentication
+- **bcryptjs** for password hashing
+- **Express Validator** for input validation
+- **Multer** for file uploads
+- **Node-cron** for scheduled tasks
+- **Nodemailer** for email notifications
 
-### Development Tools
-- **ESLint** - Code linting
-- **Prettier** - Code formatting
-- **TypeScript** - Type checking
-- **Jest** - Testing framework
-- **Docker** - Containerization
+### Database
+- **PostgreSQL** for primary data storage
+- **Redis** for caching and sessions
 
-## 📋 Prerequisites
-
-Before running this application, make sure you have the following installed:
-
-- **Node.js** (v18 or higher)
-- **npm** or **yarn**
-- **PostgreSQL** (v13 or higher)
-- **Git**
+### DevOps
+- **Docker** and **Docker Compose** for containerization
+- **Nginx** for reverse proxy and static file serving
+- **Environment-based configuration**
 
 ## 🚀 Quick Start
 
-### 1. Clone the Repository
+### Prerequisites
+- Node.js 18 or higher
+- PostgreSQL 13 or higher
+- Docker and Docker Compose (optional)
 
-```bash
-git clone <repository-url>
-cd construction-saas-platform
-```
+### Option 1: Docker Deployment (Recommended)
 
-### 2. Install Dependencies
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd construction-saas-platform
+   ```
 
-```bash
-# Install backend dependencies
-cd server
-npm install
+2. **Deploy with Docker**
+   ```bash
+   ./deploy.sh docker
+   ```
 
-# Install frontend dependencies
-cd ../client
-npm install
-```
+3. **Access the application**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
+   - Health check: http://localhost:5000/health
 
-### 3. Environment Setup
+### Option 2: Manual Setup
 
-#### Backend Environment (.env)
-```bash
-cd server
-cp .env.example .env
-```
+1. **Run the setup script**
+   ```bash
+   ./setup.sh
+   ```
 
-Edit the `.env` file with your configuration:
+2. **Configure environment variables**
+   ```bash
+   # Update server/.env with your database credentials
+   cp server/.env.example server/.env
+   # Edit server/.env with your PostgreSQL connection details
+   ```
+
+3. **Setup database**
+   ```bash
+   ./setup-db.sh
+   ```
+
+4. **Start the application**
+   ```bash
+   # Development mode
+   ./start-dev.sh
+   
+   # Or start manually:
+   # Terminal 1: cd server && npm run dev
+   # Terminal 2: cd client && npm start
+   ```
+
+## 📋 Default Login Credentials
+
+After running the setup, you can log in with:
+
+- **Admin User:**
+  - Email: `admin@construction.com`
+  - Password: `admin123`
+
+- **Manager User:**
+  - Email: `manager@construction.com`
+  - Password: `admin123`
+
+## 🗄️ Database Schema
+
+The application uses a comprehensive database schema with the following main entities:
+
+- **Users** - Authentication and user management
+- **Machines** - Equipment tracking and management
+- **Drivers** - Personnel management
+- **Driver Assistants** - Support staff management
+- **Contracts** - Project and client management
+- **Land/Room Rentals** - Property rental management
+- **Payments** - Financial transaction tracking
+- **Alerts** - Notification system
+- **Machine Hours** - Work hour tracking
+- **Salary Payments** - Employee compensation
+
+## 🔧 Configuration
+
+### Environment Variables
+
+#### Server (.env)
 ```env
-# Database
+# Database Configuration
 DATABASE_URL="postgresql://username:password@localhost:5432/construction_db"
 
-# JWT
-JWT_SECRET="your-super-secret-jwt-key"
+# JWT Configuration
+JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
 JWT_EXPIRES_IN="7d"
 
-# Server
+# Server Configuration
 PORT=5000
 NODE_ENV=development
+CLIENT_URL=http://localhost:3000
 
-# Email (optional)
+# Email Configuration (Optional)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
 
-# File Upload
+# File Upload Configuration
 UPLOAD_PATH=./uploads
 MAX_FILE_SIZE=5242880
 ```
 
-#### Frontend Environment (.env)
-```bash
-cd client
-cp .env.example .env
-```
-
-Edit the `.env` file:
+#### Client (.env)
 ```env
+# API Configuration
 REACT_APP_API_URL=http://localhost:5000/api
 REACT_APP_SOCKET_URL=http://localhost:5000
+
+# Application Configuration
+REACT_APP_NAME="Construction SaaS Platform"
+REACT_APP_VERSION="1.0.0"
+
+# Feature Flags
+REACT_APP_ENABLE_SOCKET=true
+REACT_APP_ENABLE_NOTIFICATIONS=true
+REACT_APP_ENABLE_FILE_UPLOAD=true
 ```
 
-### 4. Database Setup
+## 🚀 Deployment
 
-```bash
-# Navigate to server directory
-cd server
+### Production Deployment
 
-# Run database migrations
-npx prisma migrate dev
+1. **Set environment variables**
+   ```bash
+   export DATABASE_URL="your-production-database-url"
+   export JWT_SECRET="your-production-jwt-secret"
+   ```
 
-# Seed the database (optional)
-npx prisma db seed
-```
+2. **Build for production**
+   ```bash
+   ./deploy.sh production
+   ```
 
-### 5. Start the Application
+3. **Start production server**
+   ```bash
+   cd server && npm start
+   ```
 
-#### Development Mode
+### Docker Production Deployment
 
-```bash
-# Start backend (from server directory)
-npm run dev
-
-# Start frontend (from client directory, in a new terminal)
-cd client
-npm start
-```
-
-#### Production Mode
-
-```bash
-# Build frontend
-cd client
-npm run build
-
-# Start production server
-cd ../server
-npm start
-```
-
-## 📁 Project Structure
-
-```
-construction-saas-platform/
-├── client/                 # Frontend React application
-│   ├── public/            # Static files
-│   ├── src/
-│   │   ├── components/    # Reusable UI components
-│   │   ├── pages/         # Page components
-│   │   ├── store/         # Redux store and slices
-│   │   ├── hooks/         # Custom React hooks
-│   │   ├── services/      # API services
-│   │   ├── utils/         # Utility functions
-│   │   ├── locales/       # Translation files
-│   │   └── types/         # TypeScript type definitions
-│   ├── package.json
-│   └── tsconfig.json
-├── server/                # Backend Node.js application
-│   ├── src/
-│   │   ├── controllers/   # Route controllers
-│   │   ├── middleware/    # Express middleware
-│   │   ├── models/        # Prisma models
-│   │   ├── routes/        # API routes
-│   │   ├── services/      # Business logic
-│   │   ├── utils/         # Utility functions
-│   │   └── types/         # TypeScript type definitions
-│   ├── prisma/            # Database schema and migrations
-│   ├── uploads/           # File uploads
-│   ├── package.json
-│   └── tsconfig.json
-├── docs/                  # Documentation
-├── README.md
-└── package.json
-```
-
-## 🔧 Configuration
-
-### Database Configuration
-
-The application uses PostgreSQL with Prisma ORM. The database schema is defined in `server/prisma/schema.prisma`.
-
-### Authentication
-
-JWT-based authentication is implemented with role-based access control:
-- **Admin**: Full access to all features
-- **Manager**: Access to management features
-- **Operator**: Limited access to assigned resources
-
-### File Uploads
-
-File uploads are configured for:
-- User avatars
-- Machine images
-- Contract documents
-- Payment receipts
-
-### Scheduled Tasks
-
-Automated tasks run via node-cron:
-- Daily rent payment reminders
-- Weekly maintenance alerts
-- Monthly salary calculations
-- Contract deadline notifications
-
-## 🧪 Testing
-
-### Backend Testing
-
-```bash
-cd server
-npm test
-```
-
-### Frontend Testing
-
-```bash
-cd client
-npm test
-```
-
-### E2E Testing
-
-```bash
-npm run test:e2e
-```
+1. **Update docker-compose.yml with production settings**
+2. **Deploy with Docker**
+   ```bash
+   docker-compose -f docker-compose.prod.yml up -d
+   ```
 
 ## 📊 API Documentation
 
 ### Authentication Endpoints
-
-- `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
 - `POST /api/auth/logout` - User logout
 - `GET /api/auth/profile` - Get user profile
 - `PUT /api/auth/profile` - Update user profile
 
 ### Machine Management
-
 - `GET /api/machines` - Get all machines
 - `POST /api/machines` - Create new machine
-- `GET /api/machines/:id` - Get machine by ID
 - `PUT /api/machines/:id` - Update machine
 - `DELETE /api/machines/:id` - Delete machine
-- `POST /api/machines/:id/assign` - Assign machine to contract
+- `POST /api/machines/:id/assign` - Assign machine to driver
 
 ### Driver Management
-
 - `GET /api/drivers` - Get all drivers
 - `POST /api/drivers` - Create new driver
-- `GET /api/drivers/:id` - Get driver by ID
 - `PUT /api/drivers/:id` - Update driver
 - `DELETE /api/drivers/:id` - Delete driver
-- `POST /api/drivers/:id/assistants` - Add assistant to driver
+- `POST /api/drivers/:id/salary` - Process salary payment
 
 ### Contract Management
-
 - `GET /api/contracts` - Get all contracts
 - `POST /api/contracts` - Create new contract
-- `GET /api/contracts/:id` - Get contract by ID
 - `PUT /api/contracts/:id` - Update contract
 - `DELETE /api/contracts/:id` - Delete contract
-- `POST /api/contracts/:id/payments` - Add payment to contract
+- `POST /api/contracts/:id/machines` - Assign machines to contract
 
 ### Rental Management
-
-- `GET /api/rentals` - Get all rentals
-- `POST /api/rentals` - Create new rental
-- `GET /api/rentals/:id` - Get rental by ID
-- `PUT /api/rentals/:id` - Update rental
-- `DELETE /api/rentals/:id` - Delete rental
-- `POST /api/rentals/:id/tenants` - Assign tenant to rental
+- `GET /api/rentals/land` - Get land rentals
+- `GET /api/rentals/rooms` - Get room rentals
+- `POST /api/rentals/land` - Create land rental
+- `POST /api/rentals/rooms` - Create room rental
 
 ### Payment Management
-
 - `GET /api/payments` - Get all payments
 - `POST /api/payments` - Create new payment
-- `GET /api/payments/:id` - Get payment by ID
-- `PUT /api/payments/:id` - Update payment
-- `DELETE /api/payments/:id` - Delete payment
+- `GET /api/payments/summary` - Get payment summary
+- `GET /api/payments/statistics` - Get payment statistics
 
 ### Alerts Management
-
 - `GET /api/alerts` - Get all alerts
 - `POST /api/alerts` - Create new alert
-- `GET /api/alerts/:id` - Get alert by ID
 - `PUT /api/alerts/:id` - Update alert
 - `DELETE /api/alerts/:id` - Delete alert
-- `PUT /api/alerts/:id/status` - Update alert status
 
-## 🌐 Internationalization
+### Dashboard
+- `GET /api/dashboard/overview` - Get dashboard overview
+- `GET /api/dashboard/statistics` - Get dashboard statistics
+- `GET /api/dashboard/trends` - Get dashboard trends
+
+## 🔄 Real-time Features
+
+The application uses Socket.io for real-time updates:
+
+- **Live Dashboard Updates** - Real-time KPI updates
+- **Alert Notifications** - Instant alert delivery
+- **Payment Updates** - Live payment status changes
+- **Machine Status Changes** - Real-time equipment status
+- **Contract Progress** - Live project progress updates
+
+## 🌐 Multi-language Support
 
 The application supports multiple languages:
-- **English** (en)
-- **Dari** (dr)
-- **Pashto** (ps)
+- **English** (Default)
+- **Dari** (دری)
+- **Pashto** (پښتو)
 
-Translation files are located in `client/src/locales/`.
+Language can be changed from the user profile settings.
 
 ## 🔒 Security Features
 
-- JWT-based authentication
-- Role-based access control
-- Password hashing with bcrypt
-- Input validation and sanitization
-- CORS configuration
-- Rate limiting
-- File upload security
-- SQL injection prevention
+- **JWT Authentication** with secure token management
+- **Password Hashing** using bcryptjs
+- **Input Validation** with express-validator
+- **Rate Limiting** to prevent abuse
+- **CORS Configuration** for secure cross-origin requests
+- **Helmet.js** for security headers
+- **SQL Injection Prevention** with Prisma ORM
 
 ## 📱 Responsive Design
 
 The application is fully responsive and works on:
-- Desktop computers
-- Tablets
-- Mobile phones
-- All modern browsers
+- **Desktop** (1920px and above)
+- **Laptop** (1366px - 1919px)
+- **Tablet** (768px - 1365px)
+- **Mobile** (320px - 767px)
 
-## 🚀 Deployment
+## 🧪 Testing
 
-### Docker Deployment
-
+### Run Tests
 ```bash
-# Build and run with Docker Compose
-docker-compose up --build
+# Server tests
+cd server && npm test
+
+# Client tests
+cd client && npm test
 ```
 
-### Manual Deployment
-
-1. Build the frontend:
+### API Testing
 ```bash
-cd client
-npm run build
+# Health check
+curl http://localhost:5000/health
+
+# Test authentication
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@construction.com","password":"admin123"}'
 ```
 
-2. Set up production environment variables
-3. Run database migrations
-4. Start the production server:
+## 📈 Monitoring and Logging
+
+### Health Checks
+- **API Health**: `GET /health`
+- **Database Health**: Integrated in health check
+- **Socket.io Health**: Connection status monitoring
+
+### Logging
+- **Server Logs**: Morgan HTTP logging
+- **Error Logging**: Comprehensive error tracking
+- **Database Logs**: Prisma query logging (development)
+
+## 🔧 Maintenance
+
+### Database Backup
 ```bash
-cd server
-npm start
+# Create backup
+./deploy.sh backup
+
+# Restore backup
+./deploy.sh restore backup_20240225_143022.sql
+```
+
+### Update Application
+```bash
+# Pull latest changes
+git pull origin main
+
+# Rebuild and restart
+./deploy.sh docker
+```
+
+### View Logs
+```bash
+# Docker logs
+./deploy.sh logs
+
+# Or manually
+docker-compose logs -f
 ```
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new features
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
@@ -466,39 +389,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For support and questions:
 - Create an issue in the repository
 - Contact the development team
-- Check the documentation in the `docs/` folder
+- Check the documentation
 
-## 🔄 Updates and Maintenance
+## 🎉 Acknowledgments
 
-- Regular security updates
-- Feature enhancements
-- Bug fixes
-- Performance improvements
-- Database optimizations
-
-## 📈 Roadmap
-
-### Phase 1 (Completed)
-- ✅ Core management modules
-- ✅ User authentication and authorization
-- ✅ Basic reporting and analytics
-- ✅ Multi-language support
-- ✅ Responsive design
-
-### Phase 2 (Planned)
-- 🔄 Advanced reporting and analytics
-- 🔄 Mobile application
-- 🔄 API integrations
-- 🔄 Advanced automation
-- 🔄 Machine learning features
-
-### Phase 3 (Future)
-- 📋 AI-powered insights
-- 📋 Advanced scheduling algorithms
-- 📋 IoT integration
-- 📋 Blockchain for payments
-- 📋 Advanced security features
+- Material-UI for the beautiful UI components
+- Prisma for the excellent ORM
+- Socket.io for real-time capabilities
+- The open-source community for various libraries and tools
 
 ---
 
-**Built with ❤️ for the construction industry**
+**Built with ❤️ for construction companies worldwide**
