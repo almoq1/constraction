@@ -24,6 +24,10 @@ model User {
   contracts    Contract[]
   payments     Payment[]
   salaryPayments SalaryPayment[]
+  driverAccount DriverAccount?
+  assistantAccount AssistantAccount?
+  tenantAccount TenantAccount?
+  machineParkerAccount MachineParkerAccount?
 
   @@map("users")
 }
@@ -103,6 +107,8 @@ model Driver {
   // Relations
   driverAssignments DriverAssignment[]
   salaryPayments    SalaryPayment[]
+  driverAccount     DriverAccount?
+  leaveRecords      LeaveRecord[]
 
   @@map("drivers")
 }
@@ -123,6 +129,8 @@ model DriverAssistant {
   // Relations
   assistantAssignments AssistantAssignment[]
   salaryPayments       SalaryPayment[]
+  assistantAccount     AssistantAccount?
+  leaveRecords         LeaveRecord[]
 
   @@map("driver_assistants")
 }
@@ -330,6 +338,121 @@ model Alert {
   @@map("alerts")
 }
 
+// Driver Account Model
+model DriverAccount {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  driverId  String   @unique
+  startDate DateTime
+  totalWorkingDays Int @default(0)
+  totalLeaveDays Int @default(0)
+  netWorkingDays Int @default(0)
+  totalSalaryEarned Float @default(0)
+  totalSalaryPaid Float @default(0)
+  remainingSalary Float @default(0)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  driver Driver @relation(fields: [driverId], references: [id], onDelete: Cascade)
+
+  @@map("driver_accounts")
+}
+
+// Assistant Account Model
+model AssistantAccount {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  assistantId String @unique
+  startDate DateTime
+  totalWorkingDays Int @default(0)
+  totalLeaveDays Int @default(0)
+  netWorkingDays Int @default(0)
+  totalSalaryEarned Float @default(0)
+  totalSalaryPaid Float @default(0)
+  remainingSalary Float @default(0)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assistant DriverAssistant @relation(fields: [assistantId], references: [id], onDelete: Cascade)
+
+  @@map("assistant_accounts")
+}
+
+// Tenant Account Model
+model TenantAccount {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  tenantName String
+  tenantPhone String
+  rentalType RentalType // LAND or ROOM
+  rentalId  String
+  startDate DateTime
+  monthlyRent Float
+  totalRentDue Float @default(0)
+  totalRentPaid Float @default(0)
+  remainingRent Float @default(0)
+  advancePayments Float @default(0)
+  lastPaymentDate DateTime?
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tenant_accounts")
+}
+
+// Machine Parker Account Model
+model MachineParkerAccount {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  parkerName String
+  parkerPhone String
+  landId    String
+  startDate DateTime
+  totalMachines Int @default(0)
+  farePerMachine Float
+  totalFareDue Float @default(0)
+  totalFarePaid Float @default(0)
+  remainingFare Float @default(0)
+  lastPaymentDate DateTime?
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("machine_parker_accounts")
+}
+
+// Leave Record Model
+model LeaveRecord {
+  id        String   @id @default(cuid())
+  driverId  String?
+  assistantId String?
+  startDate DateTime
+  endDate   DateTime
+  leaveType LeaveType
+  reason    String?
+  isApproved Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  driver    Driver?         @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  assistant DriverAssistant? @relation(fields: [assistantId], references: [id], onDelete: Cascade)
+
+  @@map("leave_records")
+}
+
 // Enums
 enum UserRole {
   ADMIN
@@ -386,4 +509,16 @@ enum AlertPriority {
   MEDIUM
   HIGH
   URGENT
+}
+
+enum RentalType {
+  LAND
+  ROOM
+}
+
+enum LeaveType {
+  VACATION
+  SICK
+  PERSONAL
+  OTHER
 }

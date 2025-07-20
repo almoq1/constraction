@@ -314,7 +314,130 @@
     "pushNotifications": "Push Notifications",
     "twoFactorAuth": "Two-Factor Authentication",
     "loginNotifications": "Login Notifications"
-  }
+  },
+  "driverLogin": {
+    "title": "Driver Login",
+    "subtitle": "Access your driver account to view assignments, salary, and leave information",
+    "needHelp": "Need help logging in?"
+  },
+  "driverDashboard": {
+    "title": "Driver Dashboard",
+    "welcome": "Welcome",
+    "license": "License",
+    "totalWorkingDays": "Total Working Days",
+    "totalSalaryEarned": "Total Salary Earned",
+    "remainingSalary": "Remaining Salary",
+    "assignedMachines": "Assigned Machines",
+    "currentMonth": "Current Month",
+    "since": "Since",
+    "remaining": "Remaining",
+    "workingDays": "Working Days",
+    "leaveDays": "Leave Days",
+    "netWorkingDays": "Net Working Days",
+    "salaryEarned": "Salary Earned",
+    "salaryPaid": "Salary Paid",
+    "activeAssignments": "Active Assignments",
+    "noMachinesAssigned": "No machines assigned",
+    "contactManager": "Contact your manager for assignments",
+    "recentPayments": "Recent Payments",
+    "noRecentPayments": "No recent payments",
+    "leaveHistory": "Leave History",
+    "requestLeave": "Request Leave",
+    "noLeaveHistory": "No leave history"
+  },
+  "assistant": {
+    "login": {
+      "title": "Assistant Login",
+      "subtitle": "Access your assistant account to view assignments, salary, and leave information",
+      "button": "Sign In",
+      "help": "Need help logging in? Contact your manager"
+    },
+    "dashboard": {
+      "title": "Assistant Dashboard",
+      "totalWorkingDays": "Total Working Days",
+      "totalSalary": "Total Salary Earned",
+      "remainingSalary": "Remaining Salary",
+      "assignedMachines": "Assigned Machines",
+      "currentMonth": "Current Month",
+      "workingDays": "Working Days",
+      "leaveDays": "Leave Days",
+      "netWorkingDays": "Net Working Days",
+      "salaryEarned": "Salary Earned",
+      "salaryPaid": "Salary Paid",
+      "recentPayments": "Recent Payments",
+      "leaveHistory": "Leave History"
+    }
+  },
+  "tenant": {
+    "login": {
+      "title": "Tenant Login",
+      "subtitle": "Access your rental account to view payments and rental information",
+      "button": "Sign In",
+      "help": "Need help logging in? Contact the property manager"
+    },
+    "dashboard": {
+      "title": "Tenant Dashboard",
+      "rentalDuration": "Rental Duration",
+      "monthlyRent": "Monthly Rent",
+      "totalPaid": "Total Paid",
+      "remainingBalance": "Remaining Balance",
+      "rentalInformation": "Rental Information",
+      "rentalType": "Rental Type",
+      "startDate": "Start Date",
+      "lastPayment": "Last Payment",
+      "financialSummary": "Financial Summary",
+      "totalRentDue": "Total Rent Due",
+      "totalRentPaid": "Total Rent Paid",
+      "advancePayments": "Advance Payments",
+      "paymentHistory": "Payment History",
+      "paymentHistoryNote": "View your payment history and rental details",
+      "advancePayment": "Advance Payment",
+      "rentPayment": "Rent Payment",
+      "paymentDue": "Payment due. Please contact the property manager."
+    }
+  },
+  "machineParker": {
+    "login": {
+      "title": "Machine Parker Login",
+      "subtitle": "Access your parking account to view fare details and payment information",
+      "button": "Sign In",
+      "help": "Need help logging in? Contact the land manager"
+    },
+    "dashboard": {
+      "title": "Machine Parker Dashboard",
+      "parkingDuration": "Parking Duration",
+      "totalMachines": "Total Machines",
+      "totalPaid": "Total Paid",
+      "remainingBalance": "Remaining Balance",
+      "parkingInformation": "Parking Information",
+      "startDate": "Start Date",
+      "lastPayment": "Last Payment",
+      "financialSummary": "Financial Summary",
+      "farePerMachine": "Fare Per Machine",
+      "monthlyFare": "Monthly Fare",
+      "totalFareDue": "Total Fare Due",
+      "totalFarePaid": "Total Fare Paid",
+      "machineDetails": "Machine Details",
+      "machine": "Machine",
+      "paymentHistory": "Payment History",
+      "paymentHistoryNote": "View your payment history and parking details",
+      "farePayment": "Fare Payment",
+      "paymentDue": "Payment due. Please contact the land manager."
+    }
+  },
+  "leaveTypes": {
+    "vacation": "Vacation",
+    "sick": "Sick Leave",
+    "personal": "Personal",
+    "other": "Other"
+  },
+  "leave": {
+    "request": {
+      "title": "Request Leave",
+      "button": "Request Leave",
+      "error": "Error requesting leave"
+    }
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",
@@ -363,9 +486,38 @@
     "quantity": "Quantity",
     "percentage": "Percentage",
     "currency": "Currency",
-    "language": "Language"
+    "language": "Language",
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "reason": "Reason",
+    "approved": "Approved",
+    "pending": "Pending",
+    "active": "Active",
+    "inactive": "Inactive",
+    "contactSupport": "Contact Support",
+    "leaveType": "Leave Type",
+    "retry": "Retry",
+    "months": "months",
+    "land": "Land",
+    "room": "Room",
+    "fare": "Fare",
+    "monthlyTotal": "Monthly Total",
+    "completed": "Completed",
+    "location": "Location",
+    "size": "Size",
+    "description": "Description"
   },
   "contact": {
     "successMessage": "Thank you for your message. We'll get back to you soon!"
+  },
+  "login": {
+    "error": "Invalid email or password"
+  },
+  "dashboard": {
+    "error": "Error loading dashboard data"
   }
 }

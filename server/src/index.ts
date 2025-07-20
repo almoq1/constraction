@@ -16,6 +16,7 @@ import rentalRoutes from './routes/rentals';
 import paymentRoutes from './routes/payments';
 import alertRoutes from './routes/alerts';
 import dashboardRoutes from './routes/dashboard';
+import accountRoutes from './routes/accounts';
 
 // Import services
 import { setupCronJobs } from './services/cronJobs';
@@ -65,6 +66,7 @@ app.use('/api/rentals', rentalRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/accounts', accountRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

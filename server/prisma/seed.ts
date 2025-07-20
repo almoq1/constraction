@@ -522,6 +522,157 @@ async function main() {
 
   console.log('✅ Alerts created');
 
+  // Create driver account
+  const driverUser = await prisma.user.upsert({
+    where: { email: 'driver@construction.com' },
+    update: {},
+    create: {
+      email: 'driver@construction.com',
+      password: hashedPassword,
+      name: 'John Doe',
+      role: 'USER',
+      language: 'ENGLISH',
+    },
+  });
+
+  await prisma.driverAccount.upsert({
+    where: { driverId: 'driver-1' },
+    update: {},
+    create: {
+      userId: driverUser.id,
+      driverId: 'driver-1',
+      startDate: new Date('2024-01-01'),
+      totalWorkingDays: 45,
+      totalLeaveDays: 5,
+      netWorkingDays: 40,
+      totalSalaryEarned: 4666.67,
+      totalSalaryPaid: 3500,
+      remainingSalary: 1166.67,
+    },
+  });
+
+  // Create assistant account
+  const assistantUser = await prisma.user.upsert({
+    where: { email: 'assistant@construction.com' },
+    update: {},
+    create: {
+      email: 'assistant@construction.com',
+      password: hashedPassword,
+      name: 'Bob Wilson',
+      role: 'USER',
+      language: 'ENGLISH',
+    },
+  });
+
+  await prisma.assistantAccount.upsert({
+    where: { assistantId: 'assistant-1' },
+    update: {},
+    create: {
+      userId: assistantUser.id,
+      assistantId: 'assistant-1',
+      startDate: new Date('2024-01-15'),
+      totalWorkingDays: 35,
+      totalLeaveDays: 2,
+      netWorkingDays: 33,
+      totalSalaryEarned: 2750,
+      totalSalaryPaid: 2000,
+      remainingSalary: 750,
+    },
+  });
+
+  // Create tenant account
+  const tenantUser = await prisma.user.upsert({
+    where: { email: 'tenant@construction.com' },
+    update: {},
+    create: {
+      email: 'tenant@construction.com',
+      password: hashedPassword,
+      name: 'John Smith',
+      role: 'USER',
+      language: 'ENGLISH',
+    },
+  });
+
+  await prisma.tenantAccount.upsert({
+    where: { userId: tenantUser.id },
+    update: {},
+    create: {
+      userId: tenantUser.id,
+      tenantName: 'John Smith',
+      tenantPhone: '+1 (555) 123-4567',
+      rentalType: 'LAND',
+      rentalId: 'lr-1',
+      startDate: new Date('2024-01-01'),
+      monthlyRent: 5000,
+      totalRentDue: 10000,
+      totalRentPaid: 5000,
+      remainingRent: 5000,
+      advancePayments: 10000,
+    },
+  });
+
+  // Create machine parker account
+  const parkerUser = await prisma.user.upsert({
+    where: { email: 'parker@construction.com' },
+    update: {},
+    create: {
+      email: 'parker@construction.com',
+      password: hashedPassword,
+      name: 'Mike Johnson',
+      role: 'USER',
+      language: 'ENGLISH',
+    },
+  });
+
+  await prisma.machineParkerAccount.upsert({
+    where: { userId: parkerUser.id },
+    update: {},
+    create: {
+      userId: parkerUser.id,
+      parkerName: 'Mike Johnson',
+      parkerPhone: '+1 (555) 987-6543',
+      landId: 'land-2',
+      startDate: new Date('2024-02-01'),
+      totalMachines: 3,
+      farePerMachine: 500,
+      totalFareDue: 1500,
+      totalFarePaid: 1000,
+      remainingFare: 500,
+    },
+  });
+
+  // Create leave records
+  await Promise.all([
+    prisma.leaveRecord.upsert({
+      where: { id: 'leave-1' },
+      update: {},
+      create: {
+        id: 'leave-1',
+        driverId: 'driver-1',
+        startDate: new Date('2024-02-01'),
+        endDate: new Date('2024-02-05'),
+        leaveType: 'VACATION',
+        reason: 'Family vacation',
+        isApproved: true,
+      },
+    }),
+    prisma.leaveRecord.upsert({
+      where: { id: 'leave-2' },
+      update: {},
+      create: {
+        id: 'leave-2',
+        assistantId: 'assistant-1',
+        startDate: new Date('2024-02-10'),
+        endDate: new Date('2024-02-11'),
+        leaveType: 'SICK',
+        reason: 'Not feeling well',
+        isApproved: true,
+      },
+    }),
+  ]);
+
+  console.log('✅ User accounts created');
+
   console.log('🎉 Database seeding completed successfully!');
 }
 

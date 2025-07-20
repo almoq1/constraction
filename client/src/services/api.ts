@@ -354,4 +354,82 @@ export const uploadAPI = {
   },
 };
 
+// Accounts API
+export const accountsAPI = {
+  // Driver accounts
+  createDriverAccount: async (accountData: any): Promise<ApiResponse> => {
+    const response = await api.post('/accounts/driver', accountData);
+    return response.data;
+  },
+
+  driverLogin: async (email: string, password: string): Promise<ApiResponse> => {
+    const response = await api.post('/accounts/driver/login', { email, password });
+    return response.data;
+  },
+
+  getDriverDashboard: async (): Promise<ApiResponse> => {
+    const response = await api.get('/accounts/driver/dashboard');
+    return response.data;
+  },
+
+  // Assistant accounts
+  createAssistantAccount: async (accountData: any): Promise<ApiResponse> => {
+    const response = await api.post('/accounts/assistant', accountData);
+    return response.data;
+  },
+
+  assistantLogin: async (email: string, password: string): Promise<ApiResponse> => {
+    const response = await api.post('/accounts/assistant/login', { email, password });
+    return response.data;
+  },
+
+  getAssistantDashboard: async (): Promise<ApiResponse> => {
+    const response = await api.get('/accounts/assistant/dashboard');
+    return response.data;
+  },
+
+  // Tenant accounts
+  createTenantAccount: async (accountData: any): Promise<ApiResponse> => {
+    const response = await api.post('/accounts/tenant', accountData);
+    return response.data;
+  },
+
+  tenantLogin: async (email: string, password: string): Promise<ApiResponse> => {
+    const response = await api.post('/accounts/tenant/login', { email, password });
+    return response.data;
+  },
+
+  getTenantDashboard: async (): Promise<ApiResponse> => {
+    const response = await api.get('/accounts/tenant/dashboard');
+    return response.data;
+  },
+
+  // Machine parker accounts
+  createMachineParkerAccount: async (accountData: any): Promise<ApiResponse> => {
+    const response = await api.post('/accounts/machine-parker', accountData);
+    return response.data;
+  },
+
+  machineParkerLogin: async (email: string, password: string): Promise<ApiResponse> => {
+    const response = await api.post('/accounts/machine-parker/login', { email, password });
+    return response.data;
+  },
+
+  getMachineParkerDashboard: async (): Promise<ApiResponse> => {
+    const response = await api.get('/accounts/machine-parker/dashboard');
+    return response.data;
+  },
+
+  // Leave management
+  requestLeave: async (leaveData: any): Promise<ApiResponse> => {
+    const response = await api.post('/accounts/leave', leaveData);
+    return response.data;
+  },
+
+  getLeaveHistory: async (): Promise<ApiResponse> => {
+    const response = await api.get('/accounts/leave/history');
+    return response.data;
+  },
+};
+
 export default api;

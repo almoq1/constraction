@@ -20,6 +20,16 @@ import Profile from './pages/Profile/Profile';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import SocketProvider from './components/Socket/SocketProvider';
 
+// User Account Components
+import DriverLogin from './pages/DriverLogin/DriverLogin';
+import DriverDashboard from './pages/DriverDashboard/DriverDashboard';
+import AssistantLogin from './pages/AssistantLogin/AssistantLogin';
+import AssistantDashboard from './pages/AssistantDashboard/AssistantDashboard';
+import TenantLogin from './pages/TenantLogin/TenantLogin';
+import TenantDashboard from './pages/TenantDashboard/TenantDashboard';
+import MachineParkerLogin from './pages/MachineParkerLogin/MachineParkerLogin';
+import MachineParkerDashboard from './pages/MachineParkerDashboard/MachineParkerDashboard';
+
 // Loading component
 const LoadingScreen = () => (
   <Box
@@ -66,6 +76,16 @@ function App() {
             isAuthenticated ? <Navigate to="/register" replace /> : <Register />
           }
         />
+
+        {/* User Account Routes */}
+        <Route path="/driver-login" element={<DriverLogin />} />
+        <Route path="/driver-dashboard" element={<DriverDashboard />} />
+        <Route path="/assistant-login" element={<AssistantLogin />} />
+        <Route path="/assistant-dashboard" element={<AssistantDashboard />} />
+        <Route path="/tenant-login" element={<TenantLogin />} />
+        <Route path="/tenant-dashboard" element={<TenantDashboard />} />
+        <Route path="/machine-parker-login" element={<MachineParkerLogin />} />
+        <Route path="/machine-parker-dashboard" element={<MachineParkerDashboard />} />
 
         {/* Protected routes */}
         <Route
