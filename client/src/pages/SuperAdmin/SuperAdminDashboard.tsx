@@ -57,6 +57,9 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
+import SystemStatus from '../../components/SystemStatus';
+
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -291,6 +294,13 @@ const SuperAdminDashboard: React.FC = () => {
 
       {/* Overview Tab */}
       <TabPanel value={tabValue} index={0}>
+
+        {/* System Status */}
+        <Grid item xs={12} sx={{ mb: 3 }}>
+          <SystemStatus showDetails={true} />
+        </Grid>
+        
+
         <Grid container spacing={3}>
           {/* Recent Companies */}
           <Grid item xs={12} md={6}>
